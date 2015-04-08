@@ -44,6 +44,7 @@ $server = new \Sabre\DAV\Server($nodes);
 $server->httpRequest = $requestBackend;
 $server->setBaseUri($baseuri);
 // Add plugins
+$server->addPlugin(new \OC\Connector\Sabre\MaintenancePlugin());
 $server->addPlugin(new \Sabre\DAV\Auth\Plugin($authBackend,'ownCloud'));
 $server->addPlugin(new \Sabre\CalDAV\Plugin());
 $server->addPlugin(new \Sabre\DAVACL\Plugin());
