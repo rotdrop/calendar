@@ -1,4 +1,5 @@
 <script type="text/javascript" src="<?php print_unescaped(OC_Helper::linkTo('calendar/js', 'l10n.php'));?>"></script>
+<script type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=false"></script>
 
 <div id="notification" style="display:none;"></div>
 <div id="app-navigation">
@@ -20,7 +21,7 @@
 		<li>
 			<a id="newCalendar"><?php p($l->t('New Calendar')) ?></a>
 		</li>
-		
+
 		<?php
 			$option_calendars = OC_Calendar_Calendar::allCalendars(OCP\USER::getUser());
 			for($i = 0; $i < count($option_calendars); $i++) {
@@ -43,7 +44,7 @@
 			<img id="caldav_url_close" style="float:right;height: 16px;padding:7px;margin-top:3px;cursor:pointer;vertical-align: middle;display: none;" src="<?php p(OCP\Util::imagePath('core', 'actions/delete.svg')) ?>" alt="close"/>
 		</li>
 	</ul>
-	
+
 	<!-- Start of settings -->
 	<div id="app-settings">
 		<div id="app-settings-header">

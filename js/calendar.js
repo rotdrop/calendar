@@ -30,16 +30,16 @@ Calendar={
 		dateTimeToTimestamp:function(dateString, timeString){
 			dateTuple = dateString.split('-');
 			timeTuple = timeString.split(':');
-			
+
 			var day, month, year, minute, hour;
 			day = parseInt(dateTuple[0], 10);
 			month = parseInt(dateTuple[1], 10);
 			year = parseInt(dateTuple[2], 10);
 			hour = parseInt(timeTuple[0], 10);
 			minute = parseInt(timeTuple[1], 10);
-			
+
 			var date = new Date(year, month-1, day, hour, minute);
-			
+
 			return parseInt(date.getTime(), 10);
 		},
 		formatDate:function(year, month, day){
@@ -59,7 +59,7 @@ Calendar={
 				minute = '0' + minute;
 			}
 			return hour + ':' + minute;
-		}, 
+		},
 		adjustDate:function(){
 			var fromTime = $('#fromtime').val();
 			var fromDate = $('#from').val();
@@ -71,7 +71,7 @@ Calendar={
 
 			if(fromTimestamp >= toTimestamp){
 				fromTimestamp += 30*60*1000;
-				
+
 				var date = new Date(fromTimestamp);
 				movedTime = Calendar.Util.formatTime(date.getHours(), date.getMinutes());
 				movedDate = Calendar.Util.formatDate(date.getFullYear(),
@@ -174,9 +174,12 @@ Calendar={
 				width : 500,
 				height: 600,
 				resizable: false,
-				draggable: false,
+				//draggable: false,
 				close : function(event, ui) {
 					$(this).dialog('destroy').remove();
+                                        if ($('#event_googlemap').dialog('isOpen') == true){
+                                                $('#event_googlemap').dialog('close').remove();
+                                        }
 				}
 			});
 			Calendar.UI.Share.init();
@@ -304,6 +307,95 @@ Calendar={
 				}
 			});
 		},
+		googlepopup:function(latlng, location) {
+			if ($('#event_googlemap').dialog('isOpen') == true){
+				$('#event_googlemap').dialog('close').remove();
+			}
+			$('#event_map').html('<div id="event_googlemap"></div>');
+			var mapOptions = {
+				zoom: 15,
+				center: latlng,
+				mapTypeId: google.maps.MapTypeId.ROADMAP
+			};
+			var map = new google.maps.Map(document.getElementById("event_googlemap"), mapOptions);
+			$('#event_googlemap').dialog({
+				title : 'Google Maps',
+                                dialogClass: 'google-popup',
+				position : { my: "left top",
+					     at: "center center",
+					     of: "#event",
+					     offset: "0 0" },
+                                resizable: true,
+                                resize: 'auto',
+				width : 500,
+				height: 600,
+				close : function(event, ui) {
+					$(this).dialog('destroy').remove();
+				},
+				open  : function () {
+					var googlesearch = '';
+					if (location == '') {
+						googlesearch = latlng.lat()+','+latlng.lng();
+						location = t('calendar','Browser determined position')+'<br/>'+googlesearch;
+					} else {
+						googlesearch = location;
+					}
+					var infowindow = new google.maps.InfoWindow();
+					var marker = new google.maps.Marker({
+						map: map,
+						position: latlng
+					});
+					google.maps.event.addListener(
+						marker, 'click', function () {
+							infowindow.setContent(
+								location+'</br>'+
+									'<a href="https://maps.google.com/maps?q='+googlesearch+'" style="color:#00f;text-decoration:underline;" target="_blank">'+t('calendar','Detailed search at Google-Maps')+'</a>');
+							infowindow.open(map, marker);
+						});
+					google.maps.event.trigger(map, "resize");
+					map.setCenter(latlng);
+				},
+				resizeStop: function (event, ui) {
+					var center = map.getCenter();
+					google.maps.event.trigger(map, "resize");
+					map.setCenter(center);
+				}
+			});
+
+		},
+		googlelocation:function() {
+			if ($('#event_googlemap').dialog('isOpen') == true){
+				$('#event_googlemap').dialog('close').remove();
+			}
+
+			var location = $('input[name=location]').val();
+			geocoder = new google.maps.Geocoder();
+			geocoder.geocode( { 'address': location}, function(results, status) {
+				if (status == google.maps.GeocoderStatus.OK) {
+					var latlng = results[0].geometry.location;
+				    	Calendar.UI.googlepopup(latlng, location);
+				} else {
+					var alerttext;
+					if (location) {
+						alerttext = t('calendar', 'Location not found:')+' '+location;
+					} else {
+						alerttext = t('calendar', 'No location specified.');
+					}
+					OC.dialogs.alert(alerttext, t('calendar','Unknown location'));
+					if (navigator.geolocation) {
+						navigator.geolocation.getCurrentPosition(function(position) {
+							var latlng = new google.maps.LatLng(position.coords.latitude,
+											    position.coords.longitude);
+						    	Calendar.UI.googlepopup(latlng, '');
+						});
+					}
+				}
+			});
+		},
+		hideadvancedoptions:function(){
+			$("#advanced_options").slideUp('slow');
+			$("#advanced_options_button").css("display", "inline-block");
+		},
 		showadvancedoptions:function(){
 			$("#advanced_options").slideDown('slow');
 			$("#advanced_options_button").css("display", "none");
@@ -350,7 +442,7 @@ Calendar={
 		},
 		repeat:function(task){
 			if(task=='init'){
-				
+
 				var byWeekNoTitle = $('#advanced_byweekno').attr('title');
 				$('#byweekno').multiselect({
 					header: false,
@@ -358,7 +450,7 @@ Calendar={
 					selectedList: 2,
 					minWidth : 60
 				});
-				
+
 				var weeklyoptionsTitle = $('#weeklyoptions').attr('title');
 				$('#weeklyoptions').multiselect({
 					header: false,
@@ -369,7 +461,7 @@ Calendar={
 				$('input[name="bydate"]').datepicker({
 					dateFormat : 'dd-mm-yy'
 				});
-				
+
 				var byyeardayTitle = $('#byyearday').attr('title');
 				$('#byyearday').multiselect({
 					header: false,
@@ -377,7 +469,7 @@ Calendar={
 					selectedList: 2,
 					minWidth : 60
 				});
-				
+
 				var bymonthTitle = $('#bymonth').attr('title');
 				$('#bymonth').multiselect({
 					header: false,
@@ -385,7 +477,7 @@ Calendar={
 					selectedList: 2,
 					minWidth : 110
 				});
-				
+
 				var bymonthdayTitle = $('#bymonthday').attr('title');
 				$('#bymonthday').multiselect({
 					header: false,
@@ -581,7 +673,7 @@ Calendar={
 							Calendar.UI.Calendar.colorPicker(this);
 							$('#displayname_new').focus();
 						});
-				
+
 				var bodyListener = function(e) {
 					if($('#newcalendar_dialog').find($(e.target)).length === 0) {
 						$('#newcalendar_dialog').parent().remove();
@@ -590,7 +682,7 @@ Calendar={
 					}
 				};
 				$('body').bind('click', bodyListener);
-				
+
 				$('#newCalendar').after(div);
 				$('#newCalendar').css('display', 'none');
 			},
@@ -598,7 +690,7 @@ Calendar={
 				var li = $(document.createElement('li'))
 					.load(OC.filePath('calendar', 'ajax/calendar', 'edit.form.php'), {calendarid: calendarid},
 						function(){Calendar.UI.Calendar.colorPicker(this)});
-				
+
 				var bodyListener = function(e) {
 					if($('#editcalendar_dialog').find($(e.target)).length === 0) {
 						$(object).closest('li').before(li).show();
@@ -607,7 +699,7 @@ Calendar={
 					}
 				};
 				$('body').bind('click', bodyListener);
-				
+
 				$(object).closest('li').after(li).hide();
 			},
 			deleteCalendar:function(calid){
@@ -631,7 +723,7 @@ Calendar={
 			submit:function(button, calendarid){
 				var displayname = $.trim($("#displayname_"+calendarid).val());
 				var active = $("#active_"+calendarid).attr("checked") ? 1 : 0;
-				
+
 				var description = $("#description_"+calendarid).val();
 				var calendarcolor = $("#calendarcolor_"+calendarid).val();
 				if(displayname == ''){
@@ -745,7 +837,7 @@ Calendar={
 						return false;
 					}
 					});
-	
+
 					$('.sharedby').on('change', '.sharepermissioncheckbox', function() {
 						var container = $(this).parents('li').first();
 						var permissions = parseInt(container.data('permissions'));
@@ -992,11 +1084,11 @@ function ListView(element, calendar) {
 $(document).ready(function(){
 	Calendar.UI.lastView = defaultView;
 	Calendar.UI.changeView('auto_refresh');
-	
+
 	/**
-	* Set an interval timer to make the timeline move 
+	* Set an interval timer to make the timeline move
 	*/
-	setInterval(Calendar.Util.setTimeline,60000);	
+	setInterval(Calendar.Util.setTimeline,60000);
 	$(window).resize(_.debounce(function() {
 		/**
 		* When i use it instant the timeline is walking behind the facts
@@ -1085,7 +1177,7 @@ $(document).ready(function(){
 		onSelect: function(value, inst) {
 			var date = inst.input.datepicker('getDate');
 			$('#fullcalendar').fullCalendar('gotoDate', date);
-			
+
 			var view = $('#fullcalendar').fullCalendar('getView');
 			if(view.name == 'agendaWeek'){
 				$("[class*='fc-col']").removeClass('activeDay');
@@ -1160,6 +1252,6 @@ $(document).ready(function(){
 });
 
 var wrongKey = function(event) {
-	return ((event.type === 'keydown' || event.type === 'keypress') 
+	return ((event.type === 'keydown' || event.type === 'keypress')
 		&& (event.keyCode !== 32 && event.keyCode !== 13));
 };

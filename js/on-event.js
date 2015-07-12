@@ -22,6 +22,12 @@ $(document).on('click', '#allday_checkbox', function () {
 $(document).on('click', '#advanced_options_button', function () {
 	Calendar.UI.showadvancedoptions();
 });
+$(document).on('click', '#advanced_options_bar', function () {
+	Calendar.UI.hideadvancedoptions();
+});
+$(document).on('click', '#google-location', function () {
+	Calendar.UI.googlelocation();
+});
 $(document).on('click', '#advanced_options_button_repeat', function () {
 	Calendar.UI.showadvancedoptionsforrepeating();
 });
