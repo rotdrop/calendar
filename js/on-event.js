@@ -25,6 +25,12 @@ $(document).on('click', '#advanced_options_button', function () {
 $(document).on('click', '#advanced_options_button_repeat', function () {
 	Calendar.UI.showadvancedoptionsforrepeating();
 });
+$(document).on('click', '#advanced_options_bar', function () {
+	Calendar.UI.hideadvancedoptions();
+});
+$(document).on('click', '#google-location', function () {
+	Calendar.UI.googlelocation();
+});
 $(document).on('click', '#submitNewEvent', function () {
 	Calendar.UI.validateEventForm($(this).data('link'));
 });

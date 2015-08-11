@@ -218,6 +218,19 @@ button.category{margin:0 3px;}
 	margin: 7px 0;
 	width: 100%;
 }
+/* location input field leaves room for google button */
+#event-location {
+	width: 90%;
+}
+#google-location {
+	display: inline-block;
+	padding: 0.25em 0.5em;
+}
+#google-location img {
+	width:2em;
+	height:2em;
+	vertical-align:middle;
+}
 /* category input field leaves room for edit button */
 #category {
 	width: 90%;
@@ -597,4 +610,23 @@ button.ui-multiselect{
 	line-height:22px;
 	height:26px;
 	 text-align:left;
+}
+
+div.google-popup {
+  overflow: hidden;
+  max-height: unset !important;
+}
+
+/* Hide the advanced options in the event form */
+#advanced_options_bar {
+  cursor:pointer;
+  background-color:#BBB;
+  margin-top:0.5ex;
+  margin-bottom:0.5ex;
+  height:1ex;
+  vertical-align:middle;
+  border-top:2px solid #000;
+  moz-box-shadow:-3px 0 7px #777;
+  webkit-box-shadow:-3px 0 7px #777;
+  box-shadow: 0 0.4ex 0.8ex #777;
 }

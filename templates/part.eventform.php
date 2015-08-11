@@ -54,13 +54,18 @@
 		<?php p($l->t("All Day Event"));?>
 	</label>
 
-	<input id="advanced_options_button" type="button" class="submit" value="<?php p($l->t('Advanced options')); ?>">
+	<input id="advanced_options_button" style="display:none;" type="button" class="submit" value="<?php p($l->t('Advanced options')); ?>">
 
-	<div id="advanced_options" style="display: none;">
+	<div id="advanced_options">
+                <a class="action" title="<?php echo $l->t('Click to hide location and description fields.'); ?>">
+                   <div id="advanced_options_bar"></div>
+                </a>
+                <div id="event_map"></div>
 		<input id="event-location" type="text" size="100"
 			placeholder="<?php p($l->t('Location'));?>"
 			value="<?php p(isset($_['location']) ? $_['location'] : '') ?>"
 			maxlength="100"  name="location" />
+                <a class="action google" id="google-location" title="<?php echo $l->t("View the current location with Google-Maps"); ?>"><img alt="<?php echo $l->t("Location@Google"); ?>" src="<?php echo OCP\image_path('calendar', 'googlemaps.png'); ?>" class="png action permanent" style="width:2em;height:2em;padding:0em 0.3em 0.3em 0em;vertical-align:middle;"/></a><br/>
 
 		<input id="category" name="categories" type="text"
 			placeholder="<?php p($l->t('Categories (separate by comma)')); ?>"
