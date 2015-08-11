@@ -907,7 +907,7 @@ class OC_Calendar_Object{
 		$accessclass = isset($request["accessclass"]) ? $request["accessclass"] : null;
 		$title = $request["title"];
 		$location = $request["location"];
-		$categories = $request["categories"];
+		$categories = explode(',', $request["categories"]);
 		$allday = isset($request["allday"]);
 		$from = $request["from"];
 		$to  = $request["to"];
@@ -1101,7 +1101,11 @@ class OC_Calendar_Object{
 		}
 		$vevent->LOCATION = $location;
 		$vevent->DESCRIPTION = $description;
-		$vevent->CATEGORIES = $categories;
+                if (count($categories) > 0) {
+                  $vevent->CATEGORIES = $categories;
+                } else {
+                  unset($vevent->CATEGORIES);
+                }
 
 		/*if($repeat == "true") {
 			$vevent->RRULE = $repeat;
