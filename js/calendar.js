@@ -112,12 +112,17 @@ Calendar={
 				timeline.hide();
 			}
 
+			var todayElem = $(".fc-today");
+			if (todayElem.length == 0) {
+				return;
+			}
+
 			var curSeconds = (curTime.getHours() * 60 * 60) + (curTime.getMinutes() * 60) + curTime.getSeconds();
 			var percentOfDay = curSeconds / 86400;
 			//24 * 60 * 60 = 86400, # of seconds in a day
 			var topLoc = Math.floor(parentDiv.height() * percentOfDay);
 			var appNavigationWidth = ($(window).width() > 768) ? $('#app-navigation').width() : 0;
-			timeline.css({'left':($('.fc-today').offset().left-appNavigationWidth),'width': $('.fc-today').width(),'top':topLoc + 'px'});
+			timeline.css({'left':(todayElem.offset().left-appNavigationWidth),'width': todayElem.width(),'top':topLoc + 'px'});
 		},
 		openLocationMap:function(){
 			var address = $('#event-location').val();
@@ -582,7 +587,7 @@ Calendar={
 		lastView:null,
 		isToday:true,
 		timerHolder:null,
-		timerInterval:300000, // 300000 = 5*60*1000ms = 5 min
+		timerInterval:900000, //300000, // 300000 = 5*60*1000ms = 5 min
 		changeView:function(view){
 			switch (view){
 				case 'today':
