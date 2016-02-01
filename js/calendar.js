@@ -127,7 +127,7 @@ Calendar={
 		openLocationMap:function(){
 			var address = $('#event-location').val();
 			address = encodeURIComponent(address);
-			var newWindow = window.open('http://open.mapquest.com/?q='+address, '_blank');
+			var newWindow = window.open('http://open.mapquest.com/?q='+address, 'mapquest_window');
 			newWindow.focus();
 		}
 	},
