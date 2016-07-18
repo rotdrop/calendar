@@ -58,7 +58,6 @@
                 <a class="action" title="<?php echo $l->t('Click to hide location and description fields.'); ?>">
                    <div id="advanced_options_bar"></div>
                 </a>
-                <div id="event_map"></div>
 		<input id="event-location" type="text" size="100"
 			placeholder="<?php p($l->t('Location'));?>"
 			value="<?php p(isset($_['location']) ? $_['location'] : '') ?>"
